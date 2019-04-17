@@ -41,7 +41,7 @@ inky_display = InkyPHAT(colour)
 inky_display.set_border(inky_display.BLACK)
 
 # Create a new canvas to draw on
-img = Image.open("frustration-bg.png")
+img = Image.open("frustrated-bg.png")
 draw = ImageDraw.Draw(img)
 
 # Load the FredokaOne font
