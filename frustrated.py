@@ -2,61 +2,55 @@
 # -*- coding: utf-8 -*-
 
 import glob
-import json
 import time
-import urllib
-import sys
-from PIL import Image, ImageFont
+import argparse
+from inky import InkyPHAT
+from PIL import Image, ImageDraw, ImageFont
+from font_fredoka_one import FredokaOne
 
 try:
     import requests
 except ImportError:
     exit("This script requires the requests module\nInstall with: sudo pip install requests")
 
-import inkyphat
+try:
+    import geocoder
+except ImportError:
+    exit("This script requires the geocoder module\nInstall with: sudo pip install geocoder")
+
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    exit("This script requires the bs4 module\nInstall with: sudo pip install beautifulsoup4")
 
 
 print("""Inky pHAT: Frustrated
-
 Displays a notifcation when Barry is frustrated.
-
 """)
 
-if len(sys.argv) < 2:
-    print("""Usage: {} <colour>
-       Valid colours: red, yellow, black
-""".format(sys.argv[0]))
-    sys.exit(0)
+# Command line arguments to set display colour
 
-colour = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('--colour', '-c', type=str, required=True, choices=["red", "black", "yellow"], help="ePaper display colour")
+args = parser.parse_args()
 
-try:
-    inkyphat.set_colour(colour)
-except ValueError:
-    print('Invalid colour "{}" for V{}\n'.format(colour, inkyphat.get_version()))
-    if inkyphat.get_version() == 2:
-        sys.exit(1)
-    print('Defaulting to "red"')
+# Set up the display
 
-inkyphat.set_border(inkyphat.BLACK)
+colour = args.colour
+inky_display = InkyPHAT(colour)
+inky_display.set_border(inky_display.BLACK)
 
-# Load the built-in FredokaOne font
-font = ImageFont.truetype(inkyphat.fonts.FredokaOne, 22)
+# Create a new canvas to draw on
+img = Image.open("resources/frustration-bg.png")
+draw = ImageDraw.Draw(img)
 
-# Load our backdrop image
-inkyphat.set_image("resources/backdrop.png")
-
-# Let's draw some lines!
-#inkyphat.line((69, 36, 69, 81)) # Vertical line
-#inkyphat.line((31, 35, 184, 35)) # Horizontal top line
-#inkyphat.line((69, 58, 174, 58)) # Horizontal middle line
-#inkyphat.line((169, 58, 169, 58), 2) # Red seaweed pixel :D
-
-# And now some text
+# Load the FredokaOne font
+font = ImageFont.truetype(FredokaOne, 22)
 
 datetime = time.strftime("%d/%m %H:%M")
 inkyphat.text((104, 24), datetime, inkyphat.WHITE, font=font)
 inkyphat.text((104, 48), "Test message", inkyphat.WHITE, font=font)
 
-# And show it!
-inkyphat.show()
+# Display the weather data on Inky pHAT
+inky_display.set_image(img)
+inky_display.show()
