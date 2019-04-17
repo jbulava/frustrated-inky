@@ -29,7 +29,7 @@ img = Image.open("frustrated-bg.png")
 
 img2 = Image.new(mode='P', size=(212, 104))
 remapped = []
-pxmap = {0: 2, 1:0, 2:1}
+pxmap = {0: 2, 1:1, 2:0}
 for px in img.getdata():
     remapped.append(pxmap[px])
 img2.putdata(remapped)
