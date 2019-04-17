@@ -48,8 +48,8 @@ draw = ImageDraw.Draw(img)
 font = ImageFont.truetype(FredokaOne, 22)
 
 datetime = time.strftime("%d/%m %H:%M")
-inkyphat.text((104, 24), datetime, inkyphat.WHITE, font=font)
-inkyphat.text((104, 48), "Test message", inkyphat.WHITE, font=font)
+draw.text((104, 24), datetime, inky_display.WHITE, font=font)
+draw.text((104, 48), "Test message", inky_display.WHITE, font=font)
 
 # Display the weather data on Inky pHAT
 inky_display.set_image(img)
